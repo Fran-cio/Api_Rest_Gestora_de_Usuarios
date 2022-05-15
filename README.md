@@ -38,7 +38,7 @@ El gráfico \ref{fig:arq} se describe la arquitectura requerida.
 
 Se debe implementar un mecanismo para [rotar los logs][logrotate]
 
-![Arquitectura del sistema](Web_App.png)
+![Arquitectura del sistema](./.img_readme/Web_App.png)
 
 
 A continuación, detallaremos los dos servicios a crear y las funcionalidades de cada uno. 
