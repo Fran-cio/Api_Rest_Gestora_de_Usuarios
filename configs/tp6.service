@@ -1,0 +1,9 @@
+[Unit]
+Description = Tp6
+
+[Service]
+ExecStart = ../bin/api_contador
+ExecStart = ../bin/api_gestor_usuario
+
+[Install]
+WantedBy = multi-user.target
