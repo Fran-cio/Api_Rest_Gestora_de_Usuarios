@@ -5,8 +5,6 @@
 
 #include <jansson.h>
 
-#include "../ulfius/example_callbacks/static_compressed_inmemory_website/static_compressed_inmemory_website_callback.h"
-
 #define PUERTO 6666
 
 int acumulador;
@@ -18,6 +16,7 @@ static int increment(const struct _u_request * request, struct _u_response * res
   (void) user_data;
 
   json_t * json_body = NULL;
+
   json_int_t * acum = ((long long*)&acumulador);
   (*acum)++;
 
@@ -28,6 +27,7 @@ static int increment(const struct _u_request * request, struct _u_response * res
   json_object_set_new(json_body, "code", json_integer(*j_status));
   json_object_set_new(json_body, "description", json_integer(*acum));
 
+  ulfius_add_header_to_response(response, ".json", "application/json");
   ulfius_set_json_body_response(response, (uint)status, json_body);
   json_decref(json_body);
   
@@ -81,13 +81,6 @@ int main()
 
   uint puerto = PUERTO; 
 
-  struct _u_compressed_inmemory_website_config config;
-  // Add mime types
-  // u_map_put(&config.mime_types, ".json", "application/json");
-  // specify compressed mime types
-  // u_add_mime_types_compressed(&config, "application/json");
-
-
   struct _u_instance instancia_de_api;
 
   if (ulfius_init_instance(&instancia_de_api, puerto, NULL, NULL) != U_OK) 
@@ -96,9 +89,9 @@ int main()
     return(EXIT_FAILURE);
   }
 
-  ulfius_add_endpoint_by_val(&instancia_de_api, "POST", "/contador/increment", NULL, 0, &increment, &config);
-  ulfius_add_endpoint_by_val(&instancia_de_api, "GET", "/contador/value", NULL, 0, &value, &config);
-  ulfius_set_default_endpoint(&instancia_de_api,&no_encontrado,&config);
+  ulfius_add_endpoint_by_val(&instancia_de_api, "POST", "/contador/increment", NULL, 0, &increment, NULL);
+  ulfius_add_endpoint_by_val(&instancia_de_api, "GET", "/contador/value", NULL, 0, &value, NULL);
+  ulfius_set_default_endpoint(&instancia_de_api,&no_encontrado,NULL);
 
   if (ulfius_start_framework(&instancia_de_api) == U_OK) 
   {

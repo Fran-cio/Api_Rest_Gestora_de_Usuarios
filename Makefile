@@ -5,7 +5,7 @@ PATHbin=./bin/
 PATHrec=./src/
 PATHout=./out/
 PATHlib=./lib/
-LAB6LIB=-lulfius -lorcania -ljansson -L./ulfius/src/
+LAB6LIB=-lulfius -lorcania -ljansson -lyder -L./ulfius/src/
 
 lab6: $(PATHbin)api_gestor_usuario $(PATHbin)api_contador
 
