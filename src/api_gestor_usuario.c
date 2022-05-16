@@ -1,7 +1,11 @@
 #include <stdio.h>
-#include "../ulfius/include/ulfius.h"
 #include <stdlib.h>
 #include <string.h>
+
+#include <ulfius.h>
+#include <jansson.h>
+
+#include "../ulfius/example_callbacks/static_compressed_inmemory_website/static_compressed_inmemory_website_callback.h"
 
 #define PUERTO 7777
 
@@ -15,7 +19,7 @@ int agregar_usuario(const struct _u_request * request, struct _u_response * resp
   (void) user_data;
   (void) response;
 
-
+  
 
   return U_CALLBACK_CONTINUE;
 }
@@ -50,6 +54,13 @@ int no_encontrado(const struct _u_request * request, struct _u_response * respon
  */
 int main() 
 {
+  struct _u_compressed_inmemory_website_config config;
+
+  // Add mime types
+  u_map_put(&config.mime_types, ".json", "application/json");
+  // specify compressed mime types
+  // u_add_mime_types_compressed(&config, "application/json");
+
 
   uint puerto = PUERTO; 
 
@@ -61,8 +72,8 @@ int main()
     return(EXIT_FAILURE);
   }
 
-  ulfius_add_endpoint_by_val(&instancia_de_api, "POST", "/api/users", NULL, 0, &agregar_usuario, NULL);
-  ulfius_add_endpoint_by_val(&instancia_de_api, "GET", "/api/users", NULL, 0, &imprimir_usuario, NULL);
+  ulfius_add_endpoint_by_val(&instancia_de_api, "POST", "/api/users", NULL, 0, &agregar_usuario, &config);
+  ulfius_add_endpoint_by_val(&instancia_de_api, "GET", "/api/users", NULL, 0, &imprimir_usuario, &config);
   ulfius_set_default_endpoint(&instancia_de_api,&no_encontrado,NULL);
 
   if (ulfius_start_framework(&instancia_de_api) == U_OK) 
