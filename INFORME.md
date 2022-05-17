@@ -5,39 +5,41 @@ Partiendo del tp anterior se usan los mismos conceptos, se coloca las nuevas rut
 ### Ngix
 El objetivo de usar ngix era hacer que funcione como un proxy inverso que al recibir la request que sale de nuestro local host la redirija al path correspondiente con el binario.
 Para eso se agregaron 2 elementos a la configuraciones del ngix.
+Para crear las credenciales se uso ```  sudo htpasswd -c /etc/httpd/.htpasswd admin ```
 ```
-    server {
-	    listen 80;
+server {
+  listen 80;
 
-	    server_name tp6.com.ar;
+  server_name tp6.com.ar;
 
-	    location /{
-		    proxy_set_header X-Forwarded-For $remote_addr;
-		    proxy_pass http://localhost:7777/;
-	    }
+  auth_basic           "Administrator’s Area";
+  auth_basic_user_file /etc/httpd/.htpasswd;
 
-	    location = /api/users {
-		    proxy_set_header X-Forwarded-For $remote_addr;
-		    proxy_pass http://localhost:7777/api/users;
-	    }
+  location /{
+    proxy_set_header X-Forwarded-For $remote_addr;
+    proxy_pass http://localhost:7777/;
+  }
 
-    }
+  location = /api/users {
+    proxy_set_header X-Forwarded-For $remote_addr;
+    proxy_pass http://localhost:7777/api/users;
+  }    }
 
-    server {
-	    listen 80;
+server {
+  listen 80;
 
-	    server_name contadordeusuarios.com.ar;
+  server_name contadordeusuarios.com.ar;
 
-	    location / {
-		    proxy_set_header X-Forwarded-For $remote_addr;
-		    proxy_pass http://localhost:6666/;
-	    }
+  location / {
+    proxy_set_header X-Forwarded-For $remote_addr;
+    proxy_pass http://localhost:6666/;
+  }
 
-	    location /contador/value {
-		    proxy_set_header X-Forwarded-For $remote_addr;
-		    proxy_pass http://localhost:6666/contador/value;
-	    }
-    }
+  location /contador/value {
+    proxy_set_header X-Forwarded-For $remote_addr;
+    proxy_pass http://localhost:6666/contador/value;
+  }
+}
 }
 ```
 - *server_name* determina desde donde se va a redirigir, es decir, si yo le hago un curl a eso, lo voy a dirigir a las location de abajo
@@ -50,14 +52,14 @@ Decidi hacerlo de manera local, solamente con un par de comandos obtenidos de:
 
 ```
 "./log_user.log"{
-    hourly
+  hourly
     missingok
     rotate 5
     compress
     create
 }
 ```
-Con ese *config* y ```  ╱  ~  logrotate ./logrotate.conf --state ./logrotate-state --verbose ```.
+Con ese *config* y ``` logrotate ./logrotate.conf --state ./logrotate-state --verbose ```.
 Obtenemos un mensaje de **OK**.
 
 ### SystemD

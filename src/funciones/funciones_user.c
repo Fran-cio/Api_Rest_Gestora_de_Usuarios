@@ -56,30 +56,30 @@ void iniciar_variables()
  *
  */
 
-int acreditacion(const struct _u_request *request, struct _u_response * response)
-{
-  if (!(request->auth_basic_user != NULL &&
-        request->auth_basic_password != NULL && 
-        0 == o_strcmp(request->auth_basic_user, USER) &&
-        0 == o_strcmp(request->auth_basic_password, PASSWORD)))
-  {
-    long long status = 401;
-    json_int_t *j_status = &status;
-
-    json_t *json_body = json_object();
-    json_object_set_new(json_body, "code", json_integer(*j_status));
-    json_object_set_new(json_body, "description",
-        json_string("Error authentication"));
-
-    ulfius_set_json_body_response(response, (uint)status, json_body);
-    json_decref(json_body);
-
-    return 0;
-  }
-
-  return 1;
-}
-
+// int acreditacion(const struct _u_request *request, struct _u_response * response)
+// {
+//   if (!(request->auth_basic_user != NULL &&
+//         request->auth_basic_password != NULL && 
+//         0 == o_strcmp(request->auth_basic_user, USER) &&
+//         0 == o_strcmp(request->auth_basic_password, PASSWORD)))
+//   {
+//     long long status = 401;
+//     json_int_t *j_status = &status;
+//
+//     json_t *json_body = json_object();
+//     json_object_set_new(json_body, "code", json_integer(*j_status));
+//     json_object_set_new(json_body, "description",
+//         json_string("Error authentication"));
+//
+//     ulfius_set_json_body_response(response, (uint)status, json_body);
+//     json_decref(json_body);
+//
+//     return 0;
+//   }
+//
+//   return 1;
+// }
+//
 /*
  *
  */
@@ -210,10 +210,10 @@ int agregar_usuario(const struct _u_request * request,
   (void) user_data;
   json_t * json_body = NULL;
   long long status;
-
-  if (!acreditacion(request, response))
-    return U_CALLBACK_UNAUTHORIZED;
-
+  //
+  // if (!acreditacion(request, response))
+  //   return U_CALLBACK_UNAUTHORIZED;
+  //
   json_t * json_request= obtener_req_json(request, response);
 
   if (json_request == NULL) 
