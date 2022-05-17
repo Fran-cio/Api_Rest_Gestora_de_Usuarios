@@ -1,84 +1,11 @@
-#include <stdio.h>
-#include <ulfius.h>
-#include <stdlib.h>
-#include <string.h>
-
-#include <jansson.h>
+#include "./funciones/funciones_contador.c"
 
 #define PUERTO 6666
-
-int acumulador;
-/**
- * Callback function for the web application on /helloworld url call
- */
-static int increment(const struct _u_request * request, struct _u_response * response, void * user_data) {
-  (void) request;
-  (void) user_data;
-
-  json_t * json_body = NULL;
-
-  json_int_t * acum = ((long long*)&acumulador);
-  (*acum)++;
-
-  long long status = 200;
-  json_int_t *j_status = &status;
-  
-  json_body = json_object();
-  json_object_set_new(json_body, "code", json_integer(*j_status));
-  json_object_set_new(json_body, "description", json_integer(*acum));
-
-  ulfius_add_header_to_response(response, ".json", "application/json");
-  ulfius_set_json_body_response(response, (uint)status, json_body);
-  json_decref(json_body);
-  
-  return U_CALLBACK_CONTINUE;
-}
-
-int value(const struct _u_request * request, struct _u_response * response, void * user_data) 
-{
-  (void) request;
-  (void) user_data;
-
-  json_t * json_body = NULL;
-  json_int_t * acum = ((long long*)&acumulador);
-
-  long long status = 200;
-  json_int_t *j_status = &status;
-  
-  json_body = json_object();
-  json_object_set_new(json_body, "code", json_integer(*j_status));
-  json_object_set_new(json_body, "description", json_integer(*acum));
-
-  ulfius_set_json_body_response(response, (uint)status, json_body);
-  json_decref(json_body);
-  
-  return U_CALLBACK_CONTINUE;
-}
-
-
-int no_encontrado(const struct _u_request * request, struct _u_response * response, void * user_data) 
-{
-  (void) request;
-  (void) user_data;
-
-  json_t * json_body = NULL;
-
-  long long status = 404;
-  json_int_t *j_status = &status;
-  
-  json_body = json_object();
-  json_object_set_new(json_body, "code", json_integer(*j_status));
-  json_object_set_new(json_body, "description", json_string("NOT FOUND"));
-
-  ulfius_set_json_body_response(response, (uint)status, json_body);
-  json_decref(json_body);
-  
-  return U_CALLBACK_CONTINUE;
-}
+#define INCREMENT "/contador/increment"
+#define VALUE "/contador/value"
 
 int main()
 {
-
   uint puerto = PUERTO; 
 
   struct _u_instance instancia_de_api;
@@ -89,13 +16,19 @@ int main()
     return(EXIT_FAILURE);
   }
 
-  ulfius_add_endpoint_by_val(&instancia_de_api, "POST", "/contador/increment", NULL, 0, &increment, NULL);
-  ulfius_add_endpoint_by_val(&instancia_de_api, "GET", "/contador/value", NULL, 0, &value, NULL);
+  ulfius_add_endpoint_by_val(&instancia_de_api, "POST", INCREMENT, NULL, 0,
+      &increment, NULL);
+
+  ulfius_add_endpoint_by_val(&instancia_de_api, "GET", VALUE, NULL, 0, &value,
+      NULL);
+
   ulfius_set_default_endpoint(&instancia_de_api,&no_encontrado,NULL);
 
   if (ulfius_start_framework(&instancia_de_api) == U_OK) 
   {
-    printf("Api hosteada en %d\nApreta enter para terminar", instancia_de_api.port);
+    printf("Api hosteada en %d\nApreta enter para terminar",
+        instancia_de_api.port);
+
     getchar();
   }
   else 
