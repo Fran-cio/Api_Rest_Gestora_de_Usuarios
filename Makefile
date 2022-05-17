@@ -9,11 +9,11 @@ LAB6LIB=-lulfius -lorcania -ljansson -lyder -L./ulfius/src/
 
 lab6: $(PATHbin)api_gestor_usuario $(PATHbin)api_contador
 
-$(PATHbin)api_contador: $(PATHrec)api_contador.c 
+$(PATHbin)api_contador: $(PATHrec)api_contador.c $(PATHrec)funciones/funciones_contador.c 
 	mkdir -p $(PATHbin) 
 	$(CC) $(CFLAGS) -o $(PATHbin)api_contador $(PATHrec)api_contador.c $(LAB6LIB)
 
-$(PATHbin)api_gestor_usuario: $(PATHrec)api_gestor_usuario.c
+$(PATHbin)api_gestor_usuario: $(PATHrec)api_gestor_usuario.c $(PATHrec)funciones/funciones_contador.c
 	mkdir -p $(PATHbin) 
 	$(CC) $(CFLAGS) -o $(PATHbin)api_gestor_usuario $(PATHrec)api_gestor_usuario.c $(LAB6LIB)
 #

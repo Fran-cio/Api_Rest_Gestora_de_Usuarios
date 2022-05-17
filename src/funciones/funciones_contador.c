@@ -33,6 +33,7 @@ static int increment(const struct _u_request * request,
   return U_CALLBACK_CONTINUE;
 }
 
+
 int value(const struct _u_request * request,
     struct _u_response * response, void * user_data) 
 {

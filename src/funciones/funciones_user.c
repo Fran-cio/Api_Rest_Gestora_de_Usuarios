@@ -21,7 +21,6 @@ char fecha[128];
  *
  */
 
-
 int check_injection(char *entrada)
 {
   if (entrada == NULL) return 0;
