@@ -1,14 +1,28 @@
 #include <stdio.h>
-#include <ulfius.h>
 #include <stdlib.h>
 #include <string.h>
 
+#include <ulfius.h>
 #include <jansson.h>
+#include <yder.h>
+
+#include "../../include/fecha.h"
 
 int acumulador;
+Fecha fecha;
 /**
  * Callback function for the web application on /helloworld url call
  */
+
+char *obtener_fecha_hora()
+{
+  fecha.tiempo = time(0);
+  fecha.tlocal = localtime(&fecha.tiempo);
+  strftime(fecha.fecha_hora,128,"%d/%m/%y %H:%M:%S",fecha.tlocal);
+
+  return fecha.fecha_hora;
+}
+
 static int increment(const struct _u_request * request,
     struct _u_response * response, void * user_data) {
   (void) request;
@@ -29,6 +43,11 @@ static int increment(const struct _u_request * request,
   ulfius_add_header_to_response(response, ".json", "application/json");
   ulfius_set_json_body_response(response, (uint)status, json_body);
   json_decref(json_body);
+
+  y_log_message(Y_LOG_LEVEL_DEBUG,
+        "%s | imprimir_usuario | Contador Contador Incrementado desde: %s",
+         obtener_fecha_hora(), u_map_get(request -> map_header, "X-Forwarded-For"));
+ 
   
   return U_CALLBACK_CONTINUE;
 }

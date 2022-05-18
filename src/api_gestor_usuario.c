@@ -7,7 +7,8 @@ int main()
 {
   uint puerto = PUERTO; 
 
-  iniciar_variables();
+  y_init_logs("log_user", Y_LOG_MODE_FILE, Y_LOG_LEVEL_DEBUG, LOG,
+      "main | Inicio Log de Usuario");
 
   struct _u_instance instancia_de_api;
 

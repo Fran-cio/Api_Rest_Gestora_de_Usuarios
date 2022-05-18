@@ -1,12 +1,20 @@
 #include "./funciones/funciones_contador.c"
 
 #define PUERTO 6666
-#define INCREMENT "/contador/increment"
-#define VALUE "/contador/value"
+#define INCREMENT "contador/increment"
+#define VALUE "contador/value"
+
+#define LOG "./log/log_user.log"
 
 int main()
 {
   uint puerto = PUERTO; 
+
+  fecha.tiempo = time(0);
+  fecha.tlocal = localtime(&fecha.tiempo);
+  y_init_logs("log_contador", Y_LOG_MODE_FILE, Y_LOG_LEVEL_DEBUG, LOG,
+      "main | Inicio Log de contador");
+
 
   struct _u_instance instancia_de_api;
 
@@ -40,6 +48,8 @@ int main()
 
   ulfius_stop_framework(&instancia_de_api);
   ulfius_clean_instance(&instancia_de_api);
+
+  y_close_logs();
 
   return 0;
 }

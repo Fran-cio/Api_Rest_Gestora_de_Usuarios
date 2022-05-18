@@ -9,14 +9,14 @@
 #include <jansson.h>
 #include <yder.h>
 
+#include "../../include/fecha.h"
+
 #define USER "admin"
 #define PASSWORD "admin"
 #define LOG "./log/log_user.log"
 
-time_t tiempo;
-struct tm *tlocal;
-char fecha[128];
 
+Fecha fecha;
 /*
  *
  */
@@ -44,12 +44,13 @@ int check_injection(char *entrada)
  */
 
 
-void iniciar_variables()
+char *obtener_fecha_hora()
 {
-  tiempo = time(0);
-  tlocal = localtime(&tiempo);
-  y_init_logs("log_user", Y_LOG_MODE_FILE, Y_LOG_LEVEL_DEBUG, LOG,
-      "main | Inicio Log de Usuario");
+  fecha.tiempo = time(0);
+  fecha.tlocal = localtime(&fecha.tiempo);
+  strftime(fecha.fecha_hora,128,"%d/%m/%y %H:%M:%S",fecha.tlocal);
+
+  return fecha.fecha_hora;
 }
 
 /*
@@ -245,46 +246,44 @@ int agregar_usuario(const struct _u_request * request,
   if(!usuario_generado(response, user))
     return U_CALLBACK_CONTINUE;
 
-  strftime(fecha,128,"%d/%m/%y %H:%M:%S",tlocal);
   status = 200;
 
   json_body = json_object();
 
-  json_object_set_new(json_body, "created_at", json_string(fecha));
+  json_object_set_new(json_body, "created_at", json_string(obtener_fecha_hora()));
   json_object_set_new(json_body, "user_name", json_string(user));
   json_object_set_new(json_body, "id", json_integer(uid));
 
   ulfius_set_json_body_response(response, (uint)status, json_body);
   json_decref(json_body);
 
-
   struct _u_request incrementar ;
   ulfius_init_request(&incrementar);
 
   ulfius_set_request_properties(&incrementar,
       U_OPT_HTTP_VERB, "POST", U_OPT_HTTP_URL,
-      "http://localhost:6666/contador/increment",
-      U_OPT_CHECK_SERVER_CERTIFICATE, 0, U_OPT_NONE);
+      "contadordeusuarios.com.ar/contador/increment",
+      U_OPT_CHECK_SERVER_CERTIFICATE, 0,U_OPT_AUTH_BASIC_USER, request->auth_basic_user,
+      U_OPT_AUTH_BASIC_PASSWORD,request->auth_basic_password, U_OPT_NONE);
 
 
-  strftime(fecha,128,"%d/%m/%y %H:%M:%S",tlocal);
   if(ulfius_send_http_request(&incrementar, NULL) != U_OK)
   {
     y_log_message(Y_LOG_LEVEL_ERROR,
-        " %s | imprimir_usuario | Contador no disponible",fecha);
+        " %s | imprimir_usuario | Contador no disponible", obtener_fecha_hora());
   }
-  else
-  {
-    y_log_message(Y_LOG_LEVEL_DEBUG,
-        " %s | imprimir_usuario | Contador Contador Incrementado desde: %s",
-        fecha, u_map_get(request -> map_header, "X-Forwarded-For"));
-  }
+  // else
+  // {
+    // y_log_message(Y_LOG_LEVEL_DEBUG,
+    //     " %s | imprimir_usuario | Contador Incrementado desde: %s",
+    //     fecha, u_map_get(request -> map_header, "X-Forwarded-For"));
+  // }
 
   free(user);
   free(pass);
 
-  strftime(fecha,128,"%d/%m/%y %H:%M:%S",tlocal);
-  y_log_message(Y_LOG_LEVEL_DEBUG, " %s | agregar_usuario | Usuario %d",fecha, uid);
+  y_log_message(Y_LOG_LEVEL_DEBUG, " %s | agregar_usuario | Usuario %d",
+      obtener_fecha_hora(), uid);
 
   json_decref(json_request);
 
@@ -332,9 +331,8 @@ int imprimir_usuario(const struct _u_request * request,
 
   endpwent();
 
-  strftime(fecha,128,"%d/%m/%y %H:%M:%S",tlocal);
   y_log_message(Y_LOG_LEVEL_DEBUG,
-      " %s | imprimir_usuario | Usuarios creados: %d",fecha, cont);
+      " %s | imprimir_usuario | Usuarios creados: %d", obtener_fecha_hora(), cont);
 
   return U_CALLBACK_CONTINUE;
 }

@@ -7,40 +7,49 @@ El objetivo de usar ngix era hacer que funcione como un proxy inverso que al rec
 Para eso se agregaron 2 elementos a la configuraciones del ngix.
 Para crear las credenciales se uso ```  sudo htpasswd -c /etc/httpd/.htpasswd admin ```
 ```
-server {
-  listen 80;
-
-  server_name tp6.com.ar;
-
-  auth_basic           "Administrator’s Area";
-  auth_basic_user_file /etc/httpd/.htpasswd;
-
-  location /{
-    proxy_set_header X-Forwarded-For $remote_addr;
-    proxy_pass http://localhost:7777/;
-  }
-
-  location = /api/users {
-    proxy_set_header X-Forwarded-For $remote_addr;
-    proxy_pass http://localhost:7777/api/users;
-  }    }
-
-server {
-  listen 80;
-
-  server_name contadordeusuarios.com.ar;
-
-  location / {
-    proxy_set_header X-Forwarded-For $remote_addr;
-    proxy_pass http://localhost:6666/;
-  }
-
-  location /contador/value {
-    proxy_set_header X-Forwarded-For $remote_addr;
-    proxy_pass http://localhost:6666/contador/value;
-  }
-}
-}
+    server {
+            listen 80;
+  
+            server_name tp6.com.ar;
+  
+            auth_basic           "Administrator’s Area";
+            auth_basic_user_file /etc/httpd/.htpasswd;
+     
+            location /{
+                    auth_basic off;
+                    return 404 '{"error" : {"code" : 404, "descripcion" : "Not found"}}';
+            }
+ 
+            location = /api/users {
+                    proxy_set_header X-Forwarded-For $remote_addr;
+                    proxy_pass http://localhost:7777/api/users;
+            }
+ 
+    }
+ 
+    server {
+            listen 80;
+ 
+            auth_basic           "Administrator’s Area";
+            auth_basic_user_file /etc/httpd/.htpasswd;
+ 
+            server_name contadordeusuarios.com.ar;
+ 
+            location / {
+                    auth_basic off;
+                    return 404 '{"error" : {"code" : 404, "descripcion" : "Not found"}}';
+            }
+ 
+            location /contador/increment{
+                    proxy_set_header X-Forwarded-For $remote_addr;
+                    proxy_pass http://localhost:6666/contador/increment;
+            }
+ 
+            location /contador/value {
+                    proxy_set_header X-Forwarded-For $remote_addr;
+                    proxy_pass http://localhost:6666/contador/value;
+            }
+    }
 ```
 - *server_name* determina desde donde se va a redirigir, es decir, si yo le hago un curl a eso, lo voy a dirigir a las location de abajo
 - En cada *location* se especifica cada path de la redireccion se redirija a otra del proxy

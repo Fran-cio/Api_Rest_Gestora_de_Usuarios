@@ -13,7 +13,7 @@ $(PATHbin)api_contador: $(PATHrec)api_contador.c $(PATHrec)funciones/funciones_c
 	mkdir -p $(PATHbin) 
 	$(CC) $(CFLAGS) -o $(PATHbin)api_contador $(PATHrec)api_contador.c $(LAB6LIB)
 
-$(PATHbin)api_gestor_usuario: $(PATHrec)api_gestor_usuario.c $(PATHrec)funciones/funciones_contador.c
+$(PATHbin)api_gestor_usuario: $(PATHrec)api_gestor_usuario.c $(PATHrec)funciones/funciones_user.c
 	mkdir -p $(PATHbin) 
 	$(CC) $(CFLAGS) -o $(PATHbin)api_gestor_usuario $(PATHrec)api_gestor_usuario.c $(LAB6LIB)
 #
