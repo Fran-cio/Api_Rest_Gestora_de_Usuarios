@@ -1,4 +1,4 @@
-http -v GET contadordeusuarios.com.ar/contador/imprimir       
+http -v GET contadordeusuarios.com.ar/contador/value 
 
 http -v GET tp6.com.ar/api/users --auth admin:admin  
 

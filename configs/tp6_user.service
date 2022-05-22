@@ -1,0 +1,11 @@
+[Unit]
+Description = Tp6_user
+After=network.target
+
+[Service]
+Type=simple
+ExecStart = /usr/bin/api_gestor_usuario
+Restart=always
+
+[Install]
+WantedBy = multi-user.target

@@ -14,8 +14,7 @@
 
 #define USER "admin"
 #define PASSWORD "admin"
-#define LOG "./log/log_user.log"
-
+#define LOG "/var/log/tp6/tp6.log"
 
 Fecha fecha;
 /*

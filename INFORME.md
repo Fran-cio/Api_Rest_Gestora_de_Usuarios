@@ -2,6 +2,10 @@
 ## Informe
 ### Descripcion
 Partiendo del tp anterior se usan los mismos conceptos, se coloca las nuevas rutas y los metodos que corresponde, eso carece de la mistica como tal.
+### Make
+Se crearon las instancias **install** y **remove**, tal como un setup y un uninstall.
+Ejecutando cada uno obtenemos los efectos inversos, claramente.
+El instalador copia los binarios a */usr/bin/*, carga el ngix con la configuracion en */etc/nginx/sites-enabled/* y les levanta el servicio, carga los 3 servicios generados y les da arranque, finalmente carga las configuraciones de logrotate en */etc/logrotate.d/*.
 ### Ngix
 El objetivo de usar ngix era hacer que funcione como un proxy inverso que al recibir la request que sale de nuestro local host la redirija al path correspondiente con el binario.
 Para eso se agregaron 2 elementos a la configuraciones del ngix.
@@ -21,7 +25,6 @@ Para crear las credenciales se uso ```  sudo htpasswd -c /etc/httpd/.htpasswd
             }
  
             location = /api/users {
-                    proxy_set_header X-Forwarded-For $remote_addr;
                     proxy_pass http://localhost:7777/api/users;
             }
  
@@ -41,12 +44,10 @@ Para crear las credenciales se uso ```  sudo htpasswd -c /etc/httpd/.htpasswd
             }
  
             location /contador/increment{
-                    proxy_set_header X-Forwarded-For $remote_addr;
                     proxy_pass http://localhost:6666/contador/increment;
             }
  
             location /contador/value {
-                    proxy_set_header X-Forwarded-For $remote_addr;
                     proxy_pass http://localhost:6666/contador/value;
             }
     }
@@ -56,25 +57,22 @@ Para crear las credenciales se uso ```  sudo htpasswd -c /etc/httpd/.htpasswd
 - *proxy_set_header* coloca un encabezado con la ip del remoto *(Esto se hace para una funcion del programa)*
 
 ### LogRotate
-Decidi hacerlo de manera local, solamente con un par de comandos obtenidos de:
+Con el install se copia la config en el dir logrotate.d, con un par de comandos obtenidos de:
 [Administrar archivos de log con logrotate](https://styde.net/administrar-archivos-de-logs-con-logrotate/)
 
 ```
-"./log_user.log"{
-  hourly
+/var/log/tp6/*log{
+    hourly
     missingok
     rotate 5
     compress
     create
 }
 ```
-Con ese *config* y ``` logrotate ./logrotate.conf --state ./logrotate-state --verbose ```.
-Obtenemos un mensaje de **OK**.
 
 ### SystemD
 Ya habia estado trabajando con el SystemD asi que ya venia con practica.
-Generamos un servicio que tenga como tarea levantar los 2 binarios de nuestro programa.
-Entonces una vez generado, le damos **start** con ```systemclt start``` y con ```system enable``` generamos la tarea de cada vez que el sistema se inicie.
+Se crearon 3 archivos, 2 servicios independientes y uno que los levanta juntos. En la instalacion se copian los servicios y se le da *start*. 
 
 ### api
 Para destacar solamente queda decir que:

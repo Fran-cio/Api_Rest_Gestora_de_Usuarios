@@ -1,9 +1,11 @@
 [Unit]
 Description = Tp6
+After=tp6_user.service tp6_contador.service
 
 [Service]
-ExecStart = ../bin/api_contador
-ExecStart = ../bin/api_gestor_usuario
+Type=oneshot
+ExecStart = systemctl start tp6_user
+ExecStart = systemctl start tp6_contador
 
 [Install]
 WantedBy = multi-user.target

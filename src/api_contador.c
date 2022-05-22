@@ -4,7 +4,7 @@
 #define INCREMENT "contador/increment"
 #define VALUE "contador/value"
 
-#define LOG "./log/log_user.log"
+#define LOG "/var/log/tp6/tp6.log"
 
 int main()
 {
@@ -37,7 +37,7 @@ int main()
     printf("Api hosteada en %d\nApreta enter para terminar",
         instancia_de_api.port);
 
-    getchar();
+    while(1){};
   }
   else 
   {

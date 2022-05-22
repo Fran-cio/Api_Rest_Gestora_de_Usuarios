@@ -1,0 +1,11 @@
+[Unit]
+Description = Tp6_contador
+After=network.target
+
+[Service]
+Type=simple
+ExecStart = /usr/bin/api_contador
+Restart=always
+
+[Install]
+WantedBy = multi-user.target

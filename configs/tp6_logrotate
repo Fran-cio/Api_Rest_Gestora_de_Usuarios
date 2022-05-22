@@ -1,4 +1,4 @@
-"./log_user.log"{
+/var/log/tp6/*log{
     hourly
     missingok
     rotate 5

@@ -31,7 +31,7 @@ int main()
     printf("Api hosteada en %d\nApreta enter para terminar\n",
         instancia_de_api.port);
 
-    getchar();
+    while(1){}
   }
   else 
   {
