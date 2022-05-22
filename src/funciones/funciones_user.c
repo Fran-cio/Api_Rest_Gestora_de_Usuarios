@@ -1,3 +1,4 @@
+#include <arpa/inet.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -28,7 +29,7 @@ int check_injection(char *entrada)
   while (*entrada)
   {
     int check = (*entrada == '%') || (*entrada == '|') || (*entrada == '>')
-    || (*entrada == '<');
+    || (*entrada == '<') || (*entrada == '-');
     if (check)
     {
       return 0;
@@ -260,12 +261,15 @@ int agregar_usuario(const struct _u_request * request,
   struct _u_request incrementar ;
   ulfius_init_request(&incrementar);
 
+  struct sockaddr_in *address = (struct sockaddr_in *)(request->client_address);
+  char const *ip = inet_ntoa(address->sin_addr);
+
   ulfius_set_request_properties(&incrementar,
       U_OPT_HTTP_VERB, "POST", U_OPT_HTTP_URL,
       "contadordeusuarios.com.ar/contador/increment",
       U_OPT_CHECK_SERVER_CERTIFICATE, 0,U_OPT_AUTH_BASIC_USER, request->auth_basic_user,
-      U_OPT_AUTH_BASIC_PASSWORD,request->auth_basic_password, U_OPT_NONE);
-
+      U_OPT_AUTH_BASIC_PASSWORD,request->auth_basic_password,
+      U_OPT_HEADER_PARAMETER, "IP",ip,U_OPT_NONE);
 
   if(ulfius_send_http_request(&incrementar, NULL) != U_OK)
   {
