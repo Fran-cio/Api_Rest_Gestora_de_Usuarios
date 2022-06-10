@@ -25,6 +25,7 @@ install:
 	#	-ngix
 	#-------- Bin  ---------
 	make
+	mkdir -p /var/log/tp6
 	cp ./bin/api_contador /usr/bin/
 	cp ./bin/api_gestor_usuario /usr/bin/
 	#-------- Ngix ---------
@@ -41,7 +42,6 @@ install:
 	systemctl start tp6
 	systemctl enable tp6
 	#-------- LogRotate ----
-	mkdir -p /var/log/tp6
 	cp ./configs/tp6_logrotate /etc/logrotate.d/
 	#Exitoso
 
