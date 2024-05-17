@@ -42,7 +42,7 @@
     <a href="https://github.com/Fran-cio/restApiUserManager"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/Fran-cio/restApiUserManager/restApiUserManager">View Demo</a>
+    <a href="https://github.com/Fran-cio/restApiUserManager">View Demo</a>
     ·
     <a href="https://github.com/Fran-cio/restApiUserManager/issues">Report Bug</a>
     ·
